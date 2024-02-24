@@ -1,0 +1,34 @@
+{
+  "groups": [
+    {
+      "name": "app",
+      "type": "edu.java.configuration.ApplicationConfig",
+      "sourceType": "edu.java.configuration.ApplicationConfig"
+    },
+    {
+      "name": "app.scheduler",
+      "type": "edu.java.configuration.ApplicationConfig$Scheduler",
+      "sourceType": "edu.java.configuration.ApplicationConfig",
+      "sourceMethod": "scheduler()"
+    }
+  ],
+  "properties": [
+    {
+      "name": "app.scheduler.enable",
+      "type": "java.lang.Boolean",
+      "sourceType": "edu.java.configuration.ApplicationConfig$Scheduler",
+      "defaultValue": false
+    },
+    {
+      "name": "app.scheduler.force-check-delay",
+      "type": "java.time.Duration",
+      "sourceType": "edu.java.configuration.ApplicationConfig$Scheduler"
+    },
+    {
+      "name": "app.scheduler.interval",
+      "type": "java.time.Duration",
+      "sourceType": "edu.java.configuration.ApplicationConfig$Scheduler"
+    }
+  ],
+  "hints": []
+}
