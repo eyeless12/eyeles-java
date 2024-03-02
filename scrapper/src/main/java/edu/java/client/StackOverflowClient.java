@@ -1,7 +1,7 @@
 package edu.java.client;
 
-import edu.java.client.dto.StackOverflowPostResponse;
+import edu.java.client.dto.StackOverflowPostResponseDto;
 
 public interface StackOverflowClient {
-    StackOverflowPostResponse fetchPost(long id);
+    StackOverflowPostResponseDto fetchPost(long id);
 }

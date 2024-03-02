@@ -3,7 +3,7 @@ package edu.java.bot.service.command;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
 import edu.java.bot.client.ScrapperClient;
-import edu.java.bot.client.dto.LinkResponse;
+import edu.java.bot.client.dto.LinkResponseDto;
 import edu.java.bot.client.exception.BadRequestException;
 import edu.java.bot.client.exception.NotFoundException;
 import edu.java.bot.util.CommonUtils;
@@ -30,7 +30,7 @@ public class UntrackCommand extends Command {
     @Override
     public SendMessage process(Update update) {
         try {
-            LinkResponse linkResponse = scrapperClient.untrackLink(
+            LinkResponseDto linkResponse = scrapperClient.untrackLink(
                 update.message().chat().id(),
                 CommonUtils.cutFirstWord(update.message().text())
             );

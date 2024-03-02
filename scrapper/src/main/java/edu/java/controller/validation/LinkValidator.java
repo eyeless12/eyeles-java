@@ -2,7 +2,7 @@ package edu.java.controller.validation;
 
 import edu.java.controller.validation.annotation.SupportedLink;
 import edu.java.service.LinkService;
-import edu.java.util.CommonUtils;
+import edu.java.util.Extensions;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import java.net.MalformedURLException;
@@ -32,7 +32,7 @@ public class LinkValidator implements ConstraintValidator<SupportedLink, String>
             if (!linkService.isSupported(parsed.getHost())) {
                 constraintValidatorContext.buildConstraintViolationWithTemplate(
                     "Domain " + parsed.getHost() + " is not supported yet. List of all supported domains:\n"
-                        + CommonUtils.joinEnumerated(linkService.getSupportedDomains(), 1)).addConstraintViolation();
+                        + Extensions.joinEnumerated(linkService.getSupportedDomains(), 1)).addConstraintViolation();
                 return false;
             }
             return true;

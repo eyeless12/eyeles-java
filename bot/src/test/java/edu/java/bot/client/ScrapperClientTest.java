@@ -2,8 +2,8 @@ package edu.java.bot.client;
 
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import edu.java.bot.TestUtils;
-import edu.java.bot.client.dto.LinkResponse;
-import edu.java.bot.client.dto.ListLinksResponse;
+import edu.java.bot.client.dto.LinkResponseDto;
+import edu.java.bot.client.dto.ListLinksResponseDto;
 import edu.java.bot.client.exception.BadRequestException;
 import edu.java.bot.client.exception.ConflictException;
 import edu.java.bot.client.exception.NotFoundException;
@@ -85,10 +85,10 @@ public class ScrapperClientTest {
                 )))
         );
 
-        ListLinksResponse response = scrapperClient.fetchLinks(chatId);
-        ListLinksResponse expectedResponse = new ListLinksResponse();
+        ListLinksResponseDto response = scrapperClient.fetchLinks(chatId);
+        ListLinksResponseDto expectedResponse = new ListLinksResponseDto();
         expectedResponse.setLinks(IntStream.range(0, size).mapToObj(index -> {
-            LinkResponse linkResponse = new LinkResponse();
+            LinkResponseDto linkResponse = new LinkResponseDto();
             linkResponse.setId(linkIds.get(index));
             linkResponse.setUrl(TestUtils.toUrl(LINKS.get(index)));
             return linkResponse;
@@ -119,8 +119,8 @@ public class ScrapperClientTest {
                 .withHeader("Content-Type", "application/json")
                 .withBody(createLinkResponse(linkId, LINKS.getFirst()))));
         assertThat(scrapperClient.trackLink(chatId, LINKS.getFirst())).extracting(
-            LinkResponse::getId,
-            LinkResponse::getUrl
+            LinkResponseDto::getId,
+            LinkResponseDto::getUrl
         ).containsExactly(linkId, TestUtils.toUrl(LINKS.getFirst()));
     }
 
@@ -177,8 +177,8 @@ public class ScrapperClientTest {
                 .withHeader("Content-Type", "application/json")
                 .withBody(createLinkResponse(linkId, LINKS.getFirst()))));
         assertThat(scrapperClient.untrackLink(chatId, LINKS.getFirst())).extracting(
-            LinkResponse::getId,
-            LinkResponse::getUrl
+            LinkResponseDto::getId,
+            LinkResponseDto::getUrl
         ).containsExactly(linkId, TestUtils.toUrl(LINKS.getFirst()));
     }
 

@@ -3,8 +3,8 @@ package edu.java.bot.service.command;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
 import edu.java.bot.client.ScrapperClient;
-import edu.java.bot.client.dto.LinkResponse;
-import edu.java.bot.client.dto.ListLinksResponse;
+import edu.java.bot.client.dto.LinkResponseDto;
+import edu.java.bot.client.dto.ListLinksResponseDto;
 import edu.java.bot.util.CommonUtils;
 import org.springframework.stereotype.Component;
 
@@ -28,7 +28,7 @@ public class ListCommand extends Command {
 
     @Override
     public SendMessage process(Update update) {
-        ListLinksResponse links = scrapperClient.fetchLinks(update.message().chat().id());
+        ListLinksResponseDto links = scrapperClient.fetchLinks(update.message().chat().id());
         if (links.getLinks().isEmpty()) {
             return new SendMessage(
                 update.message().chat().id(),
@@ -38,7 +38,7 @@ public class ListCommand extends Command {
         return new SendMessage(
             update.message().chat().id(),
             "Your tracked links:\n"
-                + CommonUtils.joinEnumerated(links.getLinks().stream().map(LinkResponse::getUrl).toList(), 1)
+                + CommonUtils.joinEnumerated(links.getLinks().stream().map(LinkResponseDto::getUrl).toList(), 1)
         );
     }
 }

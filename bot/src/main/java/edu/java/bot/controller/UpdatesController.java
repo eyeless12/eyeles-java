@@ -1,7 +1,7 @@
 package edu.java.bot.controller;
 
-import edu.java.bot.controller.dto.ApiErrorResponse;
-import edu.java.bot.controller.dto.LinkUpdateRequest;
+import edu.java.bot.controller.dto.ApiErrorResponseDto;
+import edu.java.bot.controller.dto.LinkUpdateRequestDto;
 import edu.java.bot.service.BotService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -31,20 +31,20 @@ public class UpdatesController {
     @PostMapping
     @Operation(summary = "Send update", requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
         required = true, content = {
-            @Content(mediaType = "application/json", schema = @Schema(implementation = LinkUpdateRequest.class))
+            @Content(mediaType = "application/json", schema = @Schema(implementation = LinkUpdateRequestDto.class))
         }
     ))
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Update processed", content = @Content),
         @ApiResponse(responseCode = "400", description = "Invalid Request Parameters", content = {
-            @Content(mediaType = "application/json", schema = @Schema(implementation = ApiErrorResponse.class))
+            @Content(mediaType = "application/json", schema = @Schema(implementation = ApiErrorResponseDto.class))
         })
     })
     public ResponseEntity<?> sendUpdate(
-        @Valid @RequestBody LinkUpdateRequest request, BindingResult bindingResult) {
+        @Valid @RequestBody LinkUpdateRequestDto request, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return ResponseEntity.badRequest()
-                .body(new ApiErrorResponse(
+                .body(new ApiErrorResponseDto(
                     bindingResult.getAllErrors().getFirst().getDefaultMessage(),
                     "400",
                     "",

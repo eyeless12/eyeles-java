@@ -1,7 +1,7 @@
 package edu.java.client.implementation;
 
 import edu.java.client.GithubClient;
-import edu.java.client.dto.GithubRepositoryResponse;
+import edu.java.client.dto.GithubRepositoryResponseDto;
 import org.springframework.web.reactive.function.client.WebClient;
 
 public class GithubClientImpl implements GithubClient {
@@ -12,11 +12,11 @@ public class GithubClientImpl implements GithubClient {
     }
 
     @Override
-    public GithubRepositoryResponse fetchRepository(String owner, String repo) {
+    public GithubRepositoryResponseDto fetchRepository(String owner, String repo) {
         return webClient.get()
             .uri("/repos/{owner}/{repo}", owner, repo)
             .retrieve()
-            .bodyToMono(GithubRepositoryResponse.class)
+            .bodyToMono(GithubRepositoryResponseDto.class)
             .block();
     }
 }

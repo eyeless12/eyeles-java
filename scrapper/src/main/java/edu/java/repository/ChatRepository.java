@@ -1,7 +1,7 @@
 package edu.java.repository;
 
 import edu.java.configuration.ApplicationConfig;
-import edu.java.service.domain.Chat;
+import edu.java.model.Chat;
 import java.util.Optional;
 import org.springframework.stereotype.Component;
 

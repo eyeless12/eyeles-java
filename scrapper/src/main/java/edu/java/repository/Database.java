@@ -1,6 +1,6 @@
 package edu.java.repository;
 
-import edu.java.service.domain.Chat;
+import edu.java.model.Chat;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

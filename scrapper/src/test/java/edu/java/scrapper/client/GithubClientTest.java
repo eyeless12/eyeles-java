@@ -2,7 +2,7 @@ package edu.java.scrapper.client;
 
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import edu.java.client.GithubClient;
-import edu.java.client.dto.GithubRepositoryResponse;
+import edu.java.client.dto.GithubRepositoryResponseDto;
 import edu.java.client.implementation.GithubClientImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -140,14 +140,14 @@ public class GithubClientTest {
                       "network_count": 51043,
                       "subscribers_count": 8334
                     }""")));
-        GithubRepositoryResponse response = githubClient.fetchRepository(owner, repository);
+        GithubRepositoryResponseDto response = githubClient.fetchRepository(owner, repository);
 
         assertThat(response)
             .isNotNull()
             .extracting(
-                GithubRepositoryResponse::id,
-                GithubRepositoryResponse::name,
-                GithubRepositoryResponse::lastActivityDate
+                GithubRepositoryResponseDto::id,
+                GithubRepositoryResponseDto::name,
+                GithubRepositoryResponseDto::lastActivityDate
             )
             .containsExactly(
                 2325298L,

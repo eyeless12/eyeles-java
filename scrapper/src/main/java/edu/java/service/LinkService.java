@@ -1,7 +1,7 @@
 package edu.java.service;
 
+import edu.java.model.Link;
 import edu.java.repository.LinkRepository;
-import edu.java.service.domain.Link;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;

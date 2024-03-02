@@ -2,9 +2,9 @@ package edu.java.repository;
 
 import com.google.gson.Gson;
 import edu.java.configuration.ApplicationConfig;
-import edu.java.service.domain.Chat;
-import edu.java.service.exception.DBException;
-import edu.java.service.exception.NoSuchChatException;
+import edu.java.exception.DBException;
+import edu.java.exception.NoSuchChatException;
+import edu.java.model.Chat;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;

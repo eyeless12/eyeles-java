@@ -1,7 +1,7 @@
 package edu.java.client.implementation;
 
 import edu.java.client.StackOverflowClient;
-import edu.java.client.dto.StackOverflowPostResponse;
+import edu.java.client.dto.StackOverflowPostResponseDto;
 import org.springframework.web.reactive.function.client.WebClient;
 
 public class StackOverflowClientImpl implements StackOverflowClient {
@@ -12,11 +12,11 @@ public class StackOverflowClientImpl implements StackOverflowClient {
     }
 
     @Override
-    public StackOverflowPostResponse fetchPost(long postId) {
+    public StackOverflowPostResponseDto fetchPost(long postId) {
         return webClient.get()
             .uri("/posts/{postId}?site=stackoverflow&filter=!nNPvSNOTRz", postId)
             .retrieve()
-            .bodyToMono(StackOverflowPostResponse.class)
+            .bodyToMono(StackOverflowPostResponseDto.class)
             .block();
     }
 }

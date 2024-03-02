@@ -2,8 +2,8 @@ package edu.java.scrapper.client;
 
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import edu.java.client.StackOverflowClient;
-import edu.java.client.dto.StackOverflowPostInnerResponse;
-import edu.java.client.dto.StackOverflowPostResponse;
+import edu.java.client.dto.StackOverflowPostInnerResponseDto;
+import edu.java.client.dto.StackOverflowPostResponseDto;
 import edu.java.client.implementation.StackOverflowClientImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -58,16 +58,16 @@ public class StackOverflowClientTest {
                       "quota_remaining": 9926
                     }""")));
 
-        StackOverflowPostResponse response = stackOverflowClient.fetchPost(postId);
+        StackOverflowPostResponseDto response = stackOverflowClient.fetchPost(postId);
 
         assertThat(response)
             .isNotNull()
             .extracting(
                 resp -> resp.items().getFirst())
             .extracting(
-                StackOverflowPostInnerResponse::id,
-                StackOverflowPostInnerResponse::title,
-                StackOverflowPostInnerResponse::lastActivityDate
+                StackOverflowPostInnerResponseDto::id,
+                StackOverflowPostInnerResponseDto::title,
+                StackOverflowPostInnerResponseDto::lastActivityDate
             )
             .containsExactly(
                 postId,

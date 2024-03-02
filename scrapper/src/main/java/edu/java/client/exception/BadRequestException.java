@@ -1,9 +1,9 @@
 package edu.java.client.exception;
 
-import edu.java.controller.dto.ApiErrorResponse;
+import edu.java.controller.dto.ApiErrorResponseDto;
 
 public class BadRequestException extends ApiErrorResponseException {
-    public BadRequestException(ApiErrorResponse apiErrorResponse) {
+    public BadRequestException(ApiErrorResponseDto apiErrorResponse) {
         super(apiErrorResponse);
     }
 }

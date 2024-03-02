@@ -1,7 +1,7 @@
 package edu.java.client;
 
-import edu.java.client.dto.GithubRepositoryResponse;
+import edu.java.client.dto.GithubRepositoryResponseDto;
 
 public interface GithubClient {
-    GithubRepositoryResponse fetchRepository(String owner, String repo);
+    GithubRepositoryResponseDto fetchRepository(String owner, String repo);
 }

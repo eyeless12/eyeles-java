@@ -1,6 +1,6 @@
 package edu.java.controller;
 
-import edu.java.controller.dto.ApiErrorResponse;
+import edu.java.controller.dto.ApiErrorResponseDto;
 import edu.java.service.ChatService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -30,10 +30,10 @@ public class ChatController {
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Chat successfully registered"),
         @ApiResponse(responseCode = "400", description = "Invalid request parameters", content = {
-            @Content(mediaType = "application/json", schema = @Schema(implementation = ApiErrorResponse.class))
+            @Content(mediaType = "application/json", schema = @Schema(implementation = ApiErrorResponseDto.class))
         }),
         @ApiResponse(responseCode = "409", description = "Chat is already registered", content = {
-            @Content(mediaType = "application/json", schema = @Schema(implementation = ApiErrorResponse.class))
+            @Content(mediaType = "application/json", schema = @Schema(implementation = ApiErrorResponseDto.class))
         })
     })
     public ResponseEntity<Void> register(@PathVariable("id") long id) {
@@ -46,10 +46,10 @@ public class ChatController {
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Chat successfully deleted"),
         @ApiResponse(responseCode = "400", description = "Invalid request parameters", content = {
-            @Content(mediaType = "application/json", schema = @Schema(implementation = ApiErrorResponse.class))
+            @Content(mediaType = "application/json", schema = @Schema(implementation = ApiErrorResponseDto.class))
         }),
         @ApiResponse(responseCode = "404", description = "Chat is not registered", content = {
-            @Content(mediaType = "application/json", schema = @Schema(implementation = ApiErrorResponse.class))
+            @Content(mediaType = "application/json", schema = @Schema(implementation = ApiErrorResponseDto.class))
         })
     })
     public ResponseEntity<Void> delete(@PathVariable("id") long id) {

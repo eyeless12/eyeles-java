@@ -1,10 +1,10 @@
 package edu.java.repository;
 
 import edu.java.configuration.ApplicationConfig;
-import edu.java.service.domain.Chat;
-import edu.java.service.domain.Link;
-import edu.java.service.exception.LinkAlreadyTrackingException;
-import edu.java.service.exception.NoSuchLinkException;
+import edu.java.exception.LinkAlreadyTrackingException;
+import edu.java.exception.NoSuchLinkException;
+import edu.java.model.Chat;
+import edu.java.model.Link;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.stereotype.Component;

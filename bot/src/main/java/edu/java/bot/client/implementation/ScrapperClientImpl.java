@@ -1,11 +1,11 @@
 package edu.java.bot.client.implementation;
 
 import edu.java.bot.client.ScrapperClient;
-import edu.java.bot.client.dto.AddLinkRequest;
-import edu.java.bot.client.dto.ApiErrorResponse;
-import edu.java.bot.client.dto.LinkResponse;
-import edu.java.bot.client.dto.ListLinksResponse;
-import edu.java.bot.client.dto.RemoveLinkRequest;
+import edu.java.bot.client.dto.AddLinkRequestDto;
+import edu.java.bot.client.dto.ApiErrorResponseDto;
+import edu.java.bot.client.dto.LinkResponseDto;
+import edu.java.bot.client.dto.ListLinksResponseDto;
+import edu.java.bot.client.dto.RemoveLinkRequestDto;
 import edu.java.bot.client.exception.BadRequestException;
 import edu.java.bot.client.exception.ConflictException;
 import edu.java.bot.client.exception.NotFoundException;
@@ -27,7 +27,7 @@ public class ScrapperClientImpl implements ScrapperClient {
     }
 
     @Override
-    public ListLinksResponse fetchLinks(long chatId) {
+    public ListLinksResponseDto fetchLinks(long chatId) {
         return webClient
             .get()
             .uri(LINKS_API_URL)
@@ -36,7 +36,7 @@ public class ScrapperClientImpl implements ScrapperClient {
             .onStatus(HttpStatus.NOT_FOUND::isSameCodeAs, clientResponse ->
                 handleStatusCode(clientResponse, NotFoundException::new)
             )
-            .bodyToMono(ListLinksResponse.class)
+            .bodyToMono(ListLinksResponseDto.class)
             .block();
     }
 
@@ -54,12 +54,12 @@ public class ScrapperClientImpl implements ScrapperClient {
     }
 
     @Override
-    public LinkResponse trackLink(long chatId, String link) {
+    public LinkResponseDto trackLink(long chatId, String link) {
         return webClient
             .post()
             .uri(LINKS_API_URL)
             .header(CHAT_HEADER, Long.toString(chatId))
-            .bodyValue(new AddLinkRequest(link))
+            .bodyValue(new AddLinkRequestDto(link))
             .retrieve()
             .onStatus(HttpStatus.CONFLICT::isSameCodeAs, clientResponse ->
                 handleStatusCode(clientResponse, ConflictException::new)
@@ -70,17 +70,17 @@ public class ScrapperClientImpl implements ScrapperClient {
             .onStatus(HttpStatus.BAD_REQUEST::isSameCodeAs, clientResponse ->
                 handleStatusCode(clientResponse, BadRequestException::new)
             )
-            .bodyToMono(LinkResponse.class)
+            .bodyToMono(LinkResponseDto.class)
             .block();
     }
 
     @Override
-    public LinkResponse untrackLink(long chatId, String link) {
+    public LinkResponseDto untrackLink(long chatId, String link) {
         return webClient
             .method(HttpMethod.DELETE)
             .uri(LINKS_API_URL)
             .header(CHAT_HEADER, Long.toString(chatId))
-            .bodyValue(new RemoveLinkRequest(link))
+            .bodyValue(new RemoveLinkRequestDto(link))
             .retrieve()
             .onStatus(HttpStatus.NOT_FOUND::isSameCodeAs, clientResponse ->
                 handleStatusCode(clientResponse, NotFoundException::new)
@@ -88,15 +88,15 @@ public class ScrapperClientImpl implements ScrapperClient {
             .onStatus(HttpStatus.BAD_REQUEST::isSameCodeAs, clientResponse ->
                 handleStatusCode(clientResponse, BadRequestException::new)
             )
-            .bodyToMono(LinkResponse.class)
+            .bodyToMono(LinkResponseDto.class)
             .block();
     }
 
     private Mono<Exception> handleStatusCode(
         ClientResponse clientResponse,
-        Function<ApiErrorResponse, Exception> constructor
+        Function<ApiErrorResponseDto, Exception> constructor
     ) {
-        return clientResponse.bodyToMono(ApiErrorResponse.class)
+        return clientResponse.bodyToMono(ApiErrorResponseDto.class)
             .flatMap(apiErrorResponse -> Mono.error(constructor.apply(apiErrorResponse)));
     }
 }

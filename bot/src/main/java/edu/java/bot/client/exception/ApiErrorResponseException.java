@@ -1,6 +1,6 @@
 package edu.java.bot.client.exception;
 
-import edu.java.bot.client.dto.ApiErrorResponse;
+import edu.java.bot.client.dto.ApiErrorResponseDto;
 import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
@@ -14,7 +14,7 @@ public class ApiErrorResponseException extends RuntimeException {
     protected final String exceptionMessage;
     protected final List<String> stacktrace;
 
-    public ApiErrorResponseException(ApiErrorResponse apiErrorResponse) {
+    public ApiErrorResponseException(ApiErrorResponseDto apiErrorResponse) {
         this.description = apiErrorResponse.description();
         this.code = apiErrorResponse.code();
         this.exceptionName = apiErrorResponse.exceptionName();
