@@ -1,8 +1,7 @@
 package edu.java.client;
 
-import edu.java.client.dto.GithubRepositoryResponse;
-import reactor.core.publisher.Mono;
+import edu.java.client.dto.GithubRepositoryResponseDto;
 
 public interface GithubClient {
-    Mono<GithubRepositoryResponse> fetchRepository(String owner, String repo);
+    GithubRepositoryResponseDto fetchRepository(String owner, String repo);
 }

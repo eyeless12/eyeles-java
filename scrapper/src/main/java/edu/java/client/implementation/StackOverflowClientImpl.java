@@ -1,22 +1,22 @@
 package edu.java.client.implementation;
 
 import edu.java.client.StackOverflowClient;
-import edu.java.client.dto.StackOverflowPostResponse;
+import edu.java.client.dto.StackOverflowPostResponseDto;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
 
 public class StackOverflowClientImpl implements StackOverflowClient {
     private final WebClient webClient;
 
-    public StackOverflowClientImpl(WebClient webClient) {
-        this.webClient = webClient;
+    public StackOverflowClientImpl(String baseUrl) {
+        this.webClient = WebClient.builder().baseUrl(baseUrl).build();
     }
 
     @Override
-    public Mono<StackOverflowPostResponse> fetchPost(long postId) {
+    public StackOverflowPostResponseDto fetchPost(long postId) {
         return webClient.get()
             .uri("/posts/{postId}?site=stackoverflow&filter=!nNPvSNOTRz", postId)
             .retrieve()
-            .bodyToMono(StackOverflowPostResponse.class);
+            .bodyToMono(StackOverflowPostResponseDto.class)
+            .block();
     }
 }
