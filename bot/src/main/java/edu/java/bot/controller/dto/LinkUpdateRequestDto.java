@@ -1,6 +1,6 @@
 package edu.java.bot.controller.dto;
 
-import edu.java.bot.controller.validation.annotation.Link;
+import edu.java.bot.controller.validation.annotation.ILink;
 import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 public class LinkUpdateRequestDto {
     private long id;
-    @Link
+    @ILink
     private String url;
     private String description;
     private List<Long> tgChatIds;
