@@ -2,7 +2,7 @@ package edu.java.scrapper.client;
 
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import edu.java.client.StackOverflowClient;
-import edu.java.client.dto.StackOverflowPostInnerResponseDto;
+import edu.java.client.dto.StackOverflowPostInnerResponse;
 import edu.java.client.implementation.StackOverflowClientImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -31,9 +31,9 @@ public class StackOverflowClientTest {
             .hasValueSatisfying(response ->
                 assertThat(response)
                     .extracting(
-                        StackOverflowPostInnerResponseDto::id,
-                        StackOverflowPostInnerResponseDto::title,
-                        StackOverflowPostInnerResponseDto::lastActivityDate
+                        StackOverflowPostInnerResponse::id,
+                        StackOverflowPostInnerResponse::title,
+                        StackOverflowPostInnerResponse::lastActivityDate
                     )
                     .containsExactly(
                         postId,

@@ -1,8 +1,8 @@
 package edu.java.scrapper.database.jdbc;
 
-import edu.java.exception.ChatAlreadyRegisteredException;
-import edu.java.exception.NoSuchChatException;
 import edu.java.service.ChatService;
+import edu.java.service.exception.ChatAlreadyRegisteredException;
+import edu.java.service.exception.NoSuchChatException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Rollback;
@@ -36,7 +36,7 @@ public class JdbcChatServiceTest extends JdbcBaseDatabaseTest {
     @Transactional
     @Rollback
     public void testUnregister() {
-        chatService.delete(4);
+        chatService.unregister(4);
         assertThat(jdbcTemplate.queryForObject(
             "SELECT COUNT(*) FROM chat WHERE id = 4",
             Integer.class
@@ -51,6 +51,6 @@ public class JdbcChatServiceTest extends JdbcBaseDatabaseTest {
     @Transactional
     @Rollback
     public void testNotRegistered() {
-        assertThatExceptionOfType(NoSuchChatException.class).isThrownBy(() -> chatService.delete(6));
+        assertThatExceptionOfType(NoSuchChatException.class).isThrownBy(() -> chatService.unregister(6));
     }
 }

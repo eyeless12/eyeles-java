@@ -1,11 +1,12 @@
 package edu.java.controller;
 
-import edu.java.controller.dto.AddLinkRequestDto;
-import edu.java.controller.dto.ApiErrorResponseDto;
-import edu.java.controller.dto.LinkResponseDto;
-import edu.java.controller.dto.ListLinksResponseDto;
-import edu.java.controller.dto.RemoveLinkRequestDto;
+import edu.java.controller.dto.AddLinkRequest;
+import edu.java.controller.dto.ApiErrorResponse;
+import edu.java.controller.dto.LinkResponse;
+import edu.java.controller.dto.ListLinksResponse;
+import edu.java.controller.dto.RemoveLinkRequest;
 import edu.java.service.LinkService;
+import edu.java.service.domain.Link;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -14,6 +15,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.util.List;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -38,93 +40,90 @@ public class LinksController {
     @Operation(summary = "Get all tracking links")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Successfully got links", content = {
-            @Content(mediaType = "application/json", schema = @Schema(implementation = ListLinksResponseDto.class))
+            @Content(mediaType = "application/json", schema = @Schema(implementation = ListLinksResponse.class))
         }),
         @ApiResponse(responseCode = "400", description = "Invalid request parameters", content = {
-            @Content(mediaType = "application/json", schema = @Schema(implementation = ApiErrorResponseDto.class))
+            @Content(mediaType = "application/json", schema = @Schema(implementation = ApiErrorResponse.class))
         }),
         @ApiResponse(responseCode = "404", description = "Chat not found", content = {
-            @Content(mediaType = "application/json", schema = @Schema(implementation = ApiErrorResponseDto.class))
+            @Content(mediaType = "application/json", schema = @Schema(implementation = ApiErrorResponse.class))
         })
     })
-    public ResponseEntity<ListLinksResponseDto> getLinks(@RequestHeader("Tg-Chat-Id") long id) {
-        List<LinkResponseDto> links = linkService.listAll(id).stream().map(link -> new LinkResponseDto(
+    public ResponseEntity<ListLinksResponse> getLinks(@RequestHeader("Tg-Chat-Id") long chatId) {
+        List<LinkResponse> links = linkService.listAll(chatId).stream().map(link -> new LinkResponse(
             link.id(), link.url())).toList();
-        return ResponseEntity.ok().body(new ListLinksResponseDto(links, links.size()));
+        return ResponseEntity.ok().body(new ListLinksResponse(links, links.size()));
     }
 
     @PostMapping
     @Operation(summary = "Add tracking link", requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
         required = true, content = {
-        @Content(mediaType = "application/json", schema = @Schema(implementation = AddLinkRequestDto.class))
+        @Content(mediaType = "application/json", schema = @Schema(implementation = AddLinkRequest.class))
     }
     ))
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Link successfully added", content = {
-            @Content(mediaType = "application/json", schema = @Schema(implementation = LinkResponseDto.class))
+            @Content(mediaType = "application/json", schema = @Schema(implementation = LinkResponse.class))
         }),
         @ApiResponse(responseCode = "400", description = "Invalid request parameters", content = {
-            @Content(mediaType = "application/json", schema = @Schema(implementation = ApiErrorResponseDto.class))
+            @Content(mediaType = "application/json", schema = @Schema(implementation = ApiErrorResponse.class))
         }),
         @ApiResponse(responseCode = "404", description = "Chat not found", content = {
-            @Content(mediaType = "application/json", schema = @Schema(implementation = ApiErrorResponseDto.class))
+            @Content(mediaType = "application/json", schema = @Schema(implementation = ApiErrorResponse.class))
         }),
         @ApiResponse(responseCode = "409", description = "Link is already tracking", content = {
-            @Content(mediaType = "application/json", schema = @Schema(implementation = ApiErrorResponseDto.class))
+            @Content(mediaType = "application/json", schema = @Schema(implementation = ApiErrorResponse.class))
         })
     })
     public ResponseEntity<?> addLink(
-        @RequestHeader("Tg-Chat-Id") long id,
-        @Valid @RequestBody AddLinkRequestDto addLinkRequest,
+        @RequestHeader("Tg-Chat-Id") long chatId,
+        @Valid @RequestBody AddLinkRequest addLinkRequest,
         BindingResult bindingResult
     ) {
         if (bindingResult.hasErrors()) {
             return createBadRequestResponse(bindingResult);
         }
-        linkService.add(addLinkRequest.getLink(), id);
-        return ResponseEntity.ok().body(null);
+        Link addedLink = linkService.add(addLinkRequest.link(), chatId);
+        return ResponseEntity.ok().body(new LinkResponse(addedLink.id(), addedLink.url()));
     }
 
     @DeleteMapping
     @Operation(summary = "Remove link tracking", requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
         required = true, content = {
-        @Content(mediaType = "application/json", schema = @Schema(implementation = RemoveLinkRequestDto.class))
+        @Content(mediaType = "application/json", schema = @Schema(implementation = RemoveLinkRequest.class))
     }
     ))
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Successfully removed link", content = {
-            @Content(mediaType = "application/json", schema = @Schema(implementation = LinkResponseDto.class))
+            @Content(mediaType = "application/json", schema = @Schema(implementation = LinkResponse.class))
         }),
         @ApiResponse(responseCode = "400", description = "Invalid request parameters", content = {
-            @Content(mediaType = "application/json", schema = @Schema(implementation = ApiErrorResponseDto.class))
+            @Content(mediaType = "application/json", schema = @Schema(implementation = ApiErrorResponse.class))
         }),
         @ApiResponse(responseCode = "404",
                      description = "Chat not found or doesn't contain the specified link",
                      content = {
                          @Content(mediaType = "application/json",
-                                  schema = @Schema(implementation = ApiErrorResponseDto.class))
+                                  schema = @Schema(implementation = ApiErrorResponse.class))
                      })
     })
     public ResponseEntity<?> deleteLink(
-        @RequestHeader("Tg-Chat-Id") long id,
-        @Valid @RequestBody RemoveLinkRequestDto removeLinkRequest,
+        @RequestHeader("Tg-Chat-Id") long chatId,
+        @Valid @RequestBody RemoveLinkRequest removeLinkRequest,
         BindingResult bindingResult
     ) {
         if (bindingResult.hasErrors()) {
             return createBadRequestResponse(bindingResult);
         }
-        linkService.remove(removeLinkRequest.link(), id);
-        return ResponseEntity.ok().body(null);
+        Link deleted = linkService.remove(removeLinkRequest.link(), chatId);
+        return ResponseEntity.ok().body(new LinkResponse(deleted.id(), deleted.url()));
     }
 
-    private ResponseEntity<ApiErrorResponseDto> createBadRequestResponse(BindingResult bindingResult) {
+    private ResponseEntity<ApiErrorResponse> createBadRequestResponse(BindingResult bindingResult) {
         return ResponseEntity.badRequest()
-            .body(new ApiErrorResponseDto(
+            .body(new ApiErrorResponse(
                 bindingResult.getAllErrors().getFirst().getDefaultMessage(),
-                "400",
-                "",
-                "",
-                List.of()
+                Integer.toString(HttpStatus.BAD_REQUEST.value())
             ));
     }
 }

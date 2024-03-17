@@ -1,6 +1,6 @@
 package edu.java.client;
 
-import edu.java.model.Link;
+import edu.java.service.domain.Link;
 import java.util.List;
 
 public interface TrackerBotClient {

@@ -1,8 +1,8 @@
 package edu.java.client.implementation;
 
 import edu.java.client.StackOverflowClient;
-import edu.java.client.dto.StackOverflowPostInnerResponseDto;
-import edu.java.client.dto.StackOverflowPostResponseDto;
+import edu.java.client.dto.StackOverflowPostInnerResponse;
+import edu.java.client.dto.StackOverflowPostResponse;
 import java.util.Optional;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
@@ -16,14 +16,14 @@ public class StackOverflowClientImpl implements StackOverflowClient {
     }
 
     @Override
-    public Optional<StackOverflowPostInnerResponseDto> fetchPost(long postId) {
-        Optional<StackOverflowPostResponseDto> resp = webClient.get()
+    public Optional<StackOverflowPostInnerResponse> fetchPost(long postId) {
+        Optional<StackOverflowPostResponse> resp = webClient.get()
             .uri(URI_PATTERN, postId)
             .exchangeToMono(response -> {
                 if (response.statusCode().is4xxClientError()) {
-                    return Mono.just(Optional.<StackOverflowPostResponseDto>empty());
+                    return Mono.just(Optional.<StackOverflowPostResponse>empty());
                 }
-                return response.bodyToMono(StackOverflowPostResponseDto.class).flatMap(r -> Mono.just(Optional.of(r)));
+                return response.bodyToMono(StackOverflowPostResponse.class).flatMap(r -> Mono.just(Optional.of(r)));
             })
             .block();
         if (resp.isEmpty() || resp.isPresent() && resp.get().items().isEmpty()) {
@@ -37,7 +37,7 @@ public class StackOverflowClientImpl implements StackOverflowClient {
         return Boolean.TRUE.equals(webClient.get()
             .uri(URI_PATTERN, postId)
             .retrieve()
-            .bodyToMono(StackOverflowPostResponseDto.class)
+            .bodyToMono(StackOverflowPostResponse.class)
             .flatMap(response -> {
                 if (response != null && !response.items().isEmpty()) {
                     return Mono.just(true);

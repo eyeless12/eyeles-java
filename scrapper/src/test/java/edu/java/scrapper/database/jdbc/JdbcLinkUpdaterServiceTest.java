@@ -1,8 +1,8 @@
 package edu.java.scrapper.database.jdbc;
 
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
-import edu.java.model.Link;
-import edu.java.repository.LinkMapper;
+import edu.java.service.domain.Link;
+import edu.java.repository.jdbc.mapper.LinkMapper;
 import edu.java.service.LinkUpdaterService;
 import edu.java.util.CommonUtils;
 import org.junit.jupiter.api.Test;

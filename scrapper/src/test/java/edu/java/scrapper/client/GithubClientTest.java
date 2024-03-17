@@ -2,18 +2,14 @@ package edu.java.scrapper.client;
 
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import edu.java.client.GithubClient;
-import edu.java.client.dto.GithubRepositoryRequestDto;
-import edu.java.client.dto.GithubRepositoryResponseDto;
+import edu.java.client.dto.GithubRepositoryRequest;
+import edu.java.client.dto.GithubRepositoryResponse;
 import edu.java.client.implementation.GithubClientImpl;
-import java.time.OffsetDateTime;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import static com.github.tomakehurst.wiremock.client.WireMock.forbidden;
-import static com.github.tomakehurst.wiremock.client.WireMock.get;
-import static com.github.tomakehurst.wiremock.client.WireMock.notFound;
-import static com.github.tomakehurst.wiremock.client.WireMock.ok;
-import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
-import static org.assertj.core.api.Assertions.assertThat;
+import java.time.OffsetDateTime;
+import static com.github.tomakehurst.wiremock.client.WireMock.*;
+import static org.assertj.core.api.Assertions.*;
 
 @WireMockTest(httpPort = 8081)
 public class GithubClientTest {
@@ -32,14 +28,14 @@ public class GithubClientTest {
 
         setOkStub(owner, repository);
 
-        assertThat(githubClient.fetchRepository(new GithubRepositoryRequestDto(owner, repository)))
+        assertThat(githubClient.fetchRepository(new GithubRepositoryRequest(owner, repository)))
             .isPresent()
             .hasValueSatisfying(response ->
                 assertThat(response)
                     .extracting(
-                        GithubRepositoryResponseDto::id,
-                        GithubRepositoryResponseDto::name,
-                        GithubRepositoryResponseDto::lastActivityDate
+                        GithubRepositoryResponse::id,
+                        GithubRepositoryResponse::name,
+                        GithubRepositoryResponse::lastActivityDate
                     )
                     .containsExactly(
                         2325298L,
@@ -57,7 +53,7 @@ public class GithubClientTest {
         stubFor(get(String.format("/repos/%s/%s", owner, repository))
             .willReturn(notFound()));
 
-        assertThat(githubClient.fetchRepository(new GithubRepositoryRequestDto(owner, repository)))
+        assertThat(githubClient.fetchRepository(new GithubRepositoryRequest(owner, repository)))
             .isEmpty();
     }
 
@@ -68,7 +64,7 @@ public class GithubClientTest {
 
         setOkStub(owner, repository);
 
-        assertThat(githubClient.exists(new GithubRepositoryRequestDto(owner, repository))).isTrue();
+        assertThat(githubClient.exists(new GithubRepositoryRequest(owner, repository))).isTrue();
     }
 
     @Test
@@ -79,7 +75,7 @@ public class GithubClientTest {
         stubFor(get(String.format("/repos/%s/%s", owner, repository))
             .willReturn(notFound()));
 
-        assertThat(githubClient.exists(new GithubRepositoryRequestDto(owner, repository))).isFalse();
+        assertThat(githubClient.exists(new GithubRepositoryRequest(owner, repository))).isFalse();
     }
 
     @Test
@@ -90,7 +86,7 @@ public class GithubClientTest {
         stubFor(get(String.format("/repos/%s/%s", owner, repository))
             .willReturn(forbidden()));
 
-        assertThat(githubClient.exists(new GithubRepositoryRequestDto(owner, repository))).isFalse();
+        assertThat(githubClient.exists(new GithubRepositoryRequest(owner, repository))).isFalse();
     }
 
     private void setOkStub(String owner, String repository) {

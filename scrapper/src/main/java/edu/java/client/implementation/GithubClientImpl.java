@@ -1,8 +1,8 @@
 package edu.java.client.implementation;
 
 import edu.java.client.GithubClient;
-import edu.java.client.dto.GithubRepositoryRequestDto;
-import edu.java.client.dto.GithubRepositoryResponseDto;
+import edu.java.client.dto.GithubRepositoryRequest;
+import edu.java.client.dto.GithubRepositoryResponse;
 import java.util.Optional;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
@@ -16,16 +16,20 @@ public class GithubClientImpl implements GithubClient {
     }
 
     @Override
-    public Optional<GithubRepositoryResponseDto> fetchRepository(GithubRepositoryRequestDto request) {
-        return Optional.ofNullable(webClient.get()
+    public Optional<GithubRepositoryResponse> fetchRepository(GithubRepositoryRequest request) {
+        return webClient.get()
             .uri(URI_PATTERN, request.owner(), request.repo())
-            .retrieve()
-            .bodyToMono(GithubRepositoryResponseDto.class)
-            .block());
+            .exchangeToMono(response -> {
+                if (response.statusCode().is4xxClientError()) {
+                    return Mono.just(Optional.<GithubRepositoryResponse>empty());
+                }
+                return response.bodyToMono(GithubRepositoryResponse.class).flatMap(r -> Mono.just(Optional.of(r)));
+            })
+            .block();
     }
 
     @Override
-    public boolean exists(GithubRepositoryRequestDto request) {
+    public boolean exists(GithubRepositoryRequest request) {
         return Boolean.TRUE.equals(webClient.get()
             .uri(URI_PATTERN, request.owner(), request.repo())
             .exchangeToMono(response -> {

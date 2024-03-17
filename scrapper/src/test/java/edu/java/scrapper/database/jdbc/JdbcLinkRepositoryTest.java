@@ -1,7 +1,7 @@
 package edu.java.scrapper.database.jdbc;
 
-import edu.java.model.Link;
 import edu.java.repository.LinkRepository;
+import edu.java.service.domain.Link;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Rollback;

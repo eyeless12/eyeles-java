@@ -1,12 +1,12 @@
 package edu.java.scrapper.database.jdbc;
 
-import edu.java.model.Chat;
 import edu.java.repository.ChatRepository;
+import edu.java.service.domain.Chat;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.*;
 
 public class JdbcChatRepositoryTest extends JdbcBaseDatabaseTest {
     @Autowired

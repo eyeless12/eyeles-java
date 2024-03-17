@@ -1,10 +1,10 @@
 package edu.java.scrapper.database.jdbc;
 
-import edu.java.exception.LinkAlreadyTrackingException;
-import edu.java.exception.NoSuchChatException;
-import edu.java.exception.NoSuchLinkException;
-import edu.java.model.Link;
+import edu.java.service.domain.Link;
 import edu.java.service.LinkService;
+import edu.java.service.exception.LinkAlreadyTrackingException;
+import edu.java.service.exception.NoSuchChatException;
+import edu.java.service.exception.NoSuchLinkException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Rollback;
