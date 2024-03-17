@@ -3,12 +3,7 @@ package edu.java.model;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import java.time.OffsetDateTime;
 
-@AllArgsConstructor
-@Getter
-@Setter
-public class Link {
-    private long id;
-    private String url;
-    private String domain;
+public record Link(long id, String url, OffsetDateTime lastCheckTime, OffsetDateTime createdAt) {
 }

@@ -3,6 +3,7 @@ package edu.java.service;
 import edu.java.exception.ChatAlreadyRegisteredException;
 import edu.java.model.Chat;
 import edu.java.repository.ChatRepository;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import org.springframework.stereotype.Service;
 
@@ -18,11 +19,11 @@ public class ChatService implements IChatService {
         chatRepository.findById(chatId).ifPresent(c -> {
             throw new ChatAlreadyRegisteredException("Chat is already registered");
         });
-        Chat chat = new Chat(chatId, new ArrayList<>());
-        chatRepository.save(chat);
+        Chat chat = new Chat(chatId, OffsetDateTime.now());
+        chatRepository.add(chat);
     }
 
     public void delete(long chatId) {
-        chatRepository.delete(chatId);
+        chatRepository.remove(chatId);
     }
 }

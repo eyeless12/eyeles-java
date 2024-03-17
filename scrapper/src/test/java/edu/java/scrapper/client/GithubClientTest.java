@@ -2,13 +2,18 @@ package edu.java.scrapper.client;
 
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import edu.java.client.GithubClient;
+import edu.java.client.dto.GithubRepositoryRequestDto;
 import edu.java.client.dto.GithubRepositoryResponseDto;
 import edu.java.client.implementation.GithubClientImpl;
+import java.time.OffsetDateTime;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import java.time.OffsetDateTime;
-import static com.github.tomakehurst.wiremock.client.WireMock.*;
-import static org.assertj.core.api.Assertions.*;
+import static com.github.tomakehurst.wiremock.client.WireMock.forbidden;
+import static com.github.tomakehurst.wiremock.client.WireMock.get;
+import static com.github.tomakehurst.wiremock.client.WireMock.notFound;
+import static com.github.tomakehurst.wiremock.client.WireMock.ok;
+import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @WireMockTest(httpPort = 8081)
 public class GithubClientTest {
@@ -21,10 +26,74 @@ public class GithubClientTest {
     }
 
     @Test
-    public void testFetchRepository() {
+    public void testFetchRepositorySuccess() {
         final String owner = "torvalds";
         final String repository = "linux";
 
+        setOkStub(owner, repository);
+
+        assertThat(githubClient.fetchRepository(new GithubRepositoryRequestDto(owner, repository)))
+            .isPresent()
+            .hasValueSatisfying(response ->
+                assertThat(response)
+                    .extracting(
+                        GithubRepositoryResponseDto::id,
+                        GithubRepositoryResponseDto::name,
+                        GithubRepositoryResponseDto::lastActivityDate
+                    )
+                    .containsExactly(
+                        2325298L,
+                        String.format("%s/%s", owner, repository),
+                        OffsetDateTime.parse("2024-02-23T15:30:57Z")
+                    ));
+
+    }
+
+    @Test
+    public void testFetchRepositoryFailed() {
+        final String owner = "torvalds";
+        final String repository = "linux";
+
+        stubFor(get(String.format("/repos/%s/%s", owner, repository))
+            .willReturn(notFound()));
+
+        assertThat(githubClient.fetchRepository(new GithubRepositoryRequestDto(owner, repository)))
+            .isEmpty();
+    }
+
+    @Test
+    public void testExistsSuccess() {
+        final String owner = "torvalds";
+        final String repository = "linux";
+
+        setOkStub(owner, repository);
+
+        assertThat(githubClient.exists(new GithubRepositoryRequestDto(owner, repository))).isTrue();
+    }
+
+    @Test
+    public void testNotExists() {
+        final String owner = "fjdklsjklajkl";
+        final String repository = "sdjlqwofjdkl";
+
+        stubFor(get(String.format("/repos/%s/%s", owner, repository))
+            .willReturn(notFound()));
+
+        assertThat(githubClient.exists(new GithubRepositoryRequestDto(owner, repository))).isFalse();
+    }
+
+    @Test
+    public void testPrivate() {
+        final String owner = "fessur";
+        final String repository = "Computer-Architecture";
+
+        stubFor(get(String.format("/repos/%s/%s", owner, repository))
+            .willReturn(forbidden()));
+
+        assertThat(githubClient.exists(new GithubRepositoryRequestDto(owner, repository))).isFalse();
+    }
+
+    private void setOkStub(String owner, String repository) {
         stubFor(get(String.format("/repos/%s/%s", owner, repository))
             .willReturn(ok()
                 .withHeader("Content-Type", "application/json")
@@ -140,19 +209,5 @@ public class GithubClientTest {
                       "network_count": 51043,
                       "subscribers_count": 8334
                     }""")));
-        GithubRepositoryResponseDto response = githubClient.fetchRepository(owner, repository);
-
-        assertThat(response)
-            .isNotNull()
-            .extracting(
-                GithubRepositoryResponseDto::id,
-                GithubRepositoryResponseDto::name,
-                GithubRepositoryResponseDto::lastActivityDate
-            )
-            .containsExactly(
-                2325298L,
-                String.format("%s/%s", owner, repository),
-                OffsetDateTime.parse("2024-02-23T15:30:57Z")
-            );
     }
 }

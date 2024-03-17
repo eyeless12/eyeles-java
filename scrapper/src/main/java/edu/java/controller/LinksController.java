@@ -49,8 +49,8 @@ public class LinksController {
         })
     })
     public ResponseEntity<ListLinksResponseDto> getLinks(@RequestHeader("Tg-Chat-Id") long id) {
-        List<LinkResponseDto> links = linkService.findAll(id).stream().map(link -> new LinkResponseDto(
-            link.getId(), link.getUrl())).toList();
+        List<LinkResponseDto> links = linkService.listAll(id).stream().map(link -> new LinkResponseDto(
+            link.id(), link.url())).toList();
         return ResponseEntity.ok().body(new ListLinksResponseDto(links, links.size()));
     }
 
@@ -82,8 +82,8 @@ public class LinksController {
         if (bindingResult.hasErrors()) {
             return createBadRequestResponse(bindingResult);
         }
-        Link addedLink = linkService.addLink(id, LinkService.parse(addLinkRequest.getLink()));
-        return ResponseEntity.ok().body(new LinkResponseDto(addedLink.getId(), addedLink.getUrl()));
+        linkService.add(addLinkRequest.getLink(), id);
+        return ResponseEntity.ok().body(null);
     }
 
     @DeleteMapping
@@ -114,9 +114,8 @@ public class LinksController {
         if (bindingResult.hasErrors()) {
             return createBadRequestResponse(bindingResult);
         }
-        Link parsed = LinkService.parse(removeLinkRequest.link());
-        Link deleted = linkService.deleteLink(id, parsed);
-        return ResponseEntity.ok().body(new LinkResponseDto(deleted.getId(), deleted.getUrl()));
+        linkService.remove(removeLinkRequest.link(), id);
+        return ResponseEntity.ok().body(null);
     }
 
     private ResponseEntity<ApiErrorResponseDto> createBadRequestResponse(BindingResult bindingResult) {

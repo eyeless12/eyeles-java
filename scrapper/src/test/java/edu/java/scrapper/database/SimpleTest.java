@@ -1,6 +1,6 @@
+package edu.java.scrapper.database;
+
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 import static org.assertj.core.api.Assertions.*;
 
-@ExtendWith(MockitoExtension.class)
 public class SimpleTest extends IntegrationTest {
     @Test
     public void testTablesExist() throws Exception {
@@ -45,7 +44,7 @@ public class SimpleTest extends IntegrationTest {
         )) {
             try (Statement statement = conn.createStatement()) {
                 try (ResultSet columns = statement.executeQuery(
-                    "SELECT column_name FROM information_schema.columns WHERE table_name = 'chat' AND column_name IN ('id', 'created_at');")) {
+                    "SELECT column_name FROM information_schema.columns WHERE table_name = 'chat';")) {
                     List<String> foundColumns = new ArrayList<>();
                     while (columns.next()) {
                         foundColumns.add(columns.getString("column_name"));
@@ -53,7 +52,7 @@ public class SimpleTest extends IntegrationTest {
                     assertThat(foundColumns).containsExactlyInAnyOrder("id", "created_at");
                 }
                 try (ResultSet columns = statement.executeQuery(
-                    "SELECT column_name FROM information_schema.columns WHERE table_name = 'link' AND column_name IN ('id', 'url', 'created_at', 'last_check_time');")) {
+                    "SELECT column_name FROM information_schema.columns WHERE table_name = 'link';")) {
                     List<String> foundColumns = new ArrayList<>();
                     while (columns.next()) {
                         foundColumns.add(columns.getString("column_name"));
@@ -61,12 +60,12 @@ public class SimpleTest extends IntegrationTest {
                     assertThat(foundColumns).containsExactlyInAnyOrder("id", "url", "created_at", "last_check_time");
                 }
                 try (ResultSet columns = statement.executeQuery(
-                    "SELECT column_name FROM information_schema.columns WHERE table_name = 'chat_link' AND column_name IN ('chat_id', 'link_id');")) {
+                    "SELECT column_name FROM information_schema.columns WHERE table_name = 'chat_link';")) {
                     List<String> foundColumns = new ArrayList<>();
                     while (columns.next()) {
                         foundColumns.add(columns.getString("column_name"));
                     }
-                    assertThat(foundColumns).containsExactlyInAnyOrder("chat_id", "link_id");
+                    assertThat(foundColumns).containsExactlyInAnyOrder("id", "chat_id", "link_id");
                 }
             }
         }

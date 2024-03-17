@@ -1,16 +1,12 @@
 package edu.java.service;
 
 import edu.java.model.Link;
-import java.util.List;
+import java.util.Collection;
 
 public interface ILinkService {
-    List<String> getSupportedDomains();
+    Link add(String url, long chatId);
 
-    boolean isSupported(String domain);
+    Link remove(String url, long chatId);
 
-    Link addLink(long id, Link link);
-
-    Link deleteLink(long chatId, Link link);
-
-    List<Link> findAll(long chatId);
+    Collection<Link> listAll(long chatId);
 }
