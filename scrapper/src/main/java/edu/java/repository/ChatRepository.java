@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 @Repository
-public class ChatRepository implements IChatRepository{
+public class ChatRepository implements IChatRepository {
     private final JdbcTemplate jdbcTemplate;
     private static final ChatMapper CHAT_MAPPER = new ChatMapper();
 

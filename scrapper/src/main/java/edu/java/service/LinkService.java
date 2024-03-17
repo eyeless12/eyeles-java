@@ -7,8 +7,8 @@ import edu.java.model.Link;
 import edu.java.repository.ChatRepository;
 import edu.java.repository.LinkRepository;
 import edu.java.util.CommonUtils;
-import org.springframework.stereotype.Service;
 import java.util.Collection;
+import org.springframework.stereotype.Service;
 
 @Service
 public class LinkService implements ILinkService {

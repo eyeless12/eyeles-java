@@ -4,7 +4,6 @@ import edu.java.exception.ChatAlreadyRegisteredException;
 import edu.java.model.Chat;
 import edu.java.repository.ChatRepository;
 import java.time.OffsetDateTime;
-import java.util.ArrayList;
 import org.springframework.stereotype.Service;
 
 @Service

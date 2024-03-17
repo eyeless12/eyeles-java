@@ -13,7 +13,6 @@ import edu.java.repository.ILinkRepository;
 import edu.java.repository.LinkRepository;
 import edu.java.util.CommonUtils;
 import jakarta.annotation.PostConstruct;
-import org.springframework.stereotype.Service;
 import java.net.URL;
 import java.util.Collection;
 import java.util.Map;
@@ -21,6 +20,7 @@ import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import org.springframework.stereotype.Service;
 
 @Service
 public class LinkUpdaterService implements ILinkUpdaterService {

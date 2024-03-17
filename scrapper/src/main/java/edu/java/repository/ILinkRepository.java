@@ -1,7 +1,6 @@
 package edu.java.repository;
 
 import edu.java.model.Link;
-
 import java.time.Duration;
 import java.util.Collection;
 import java.util.Optional;

@@ -6,5 +6,6 @@ import java.util.Optional;
 
 public interface GithubClient {
     Optional<GithubRepositoryResponseDto> fetchRepository(GithubRepositoryRequestDto githubRepositoryRequest);
+
     boolean exists(GithubRepositoryRequestDto githubRepositoryRequest);
 }

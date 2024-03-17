@@ -3,9 +3,9 @@ package edu.java.client.implementation;
 import edu.java.client.StackOverflowClient;
 import edu.java.client.dto.StackOverflowPostInnerResponseDto;
 import edu.java.client.dto.StackOverflowPostResponseDto;
+import java.util.Optional;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
-import java.util.Optional;
 
 public class StackOverflowClientImpl implements StackOverflowClient {
     private final WebClient webClient;

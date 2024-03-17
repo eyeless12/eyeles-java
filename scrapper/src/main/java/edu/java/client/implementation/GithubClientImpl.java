@@ -3,9 +3,9 @@ package edu.java.client.implementation;
 import edu.java.client.GithubClient;
 import edu.java.client.dto.GithubRepositoryRequestDto;
 import edu.java.client.dto.GithubRepositoryResponseDto;
+import java.util.Optional;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
-import java.util.Optional;
 
 public class GithubClientImpl implements GithubClient {
     private final WebClient webClient;
@@ -18,7 +18,7 @@ public class GithubClientImpl implements GithubClient {
     @Override
     public Optional<GithubRepositoryResponseDto> fetchRepository(GithubRepositoryRequestDto request) {
         return Optional.ofNullable(webClient.get()
-            .uri("/repos/{owner}/{repo}", request.owner(), request.repo())
+            .uri(URI_PATTERN, request.owner(), request.repo())
             .retrieve()
             .bodyToMono(GithubRepositoryResponseDto.class)
             .block());
