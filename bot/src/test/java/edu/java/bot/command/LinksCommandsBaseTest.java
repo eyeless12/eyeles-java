@@ -7,9 +7,9 @@ import java.util.List;
 import java.util.Random;
 import java.util.stream.IntStream;
 import edu.java.bot.client.ScrapperClient;
-import edu.java.bot.client.dto.ApiErrorResponseDto;
-import edu.java.bot.client.dto.LinkResponseDto;
-import edu.java.bot.client.dto.ListLinksResponseDto;
+import edu.java.bot.client.dto.ApiErrorResponse;
+import edu.java.bot.client.dto.LinkResponse;
+import edu.java.bot.client.dto.ListLinksResponse;
 import edu.java.bot.client.exception.BadRequestException;
 import edu.java.bot.client.exception.ConflictException;
 import edu.java.bot.client.exception.NotFoundException;
@@ -73,29 +73,18 @@ public class LinksCommandsBaseTest {
             .thenThrow(new NotFoundException(createNotTrackingYetResponse()));
     }
 
-    private ListLinksResponseDto createFetchLinksResponse(String... links) {
-        ListLinksResponseDto response = new ListLinksResponseDto();
-        response.setSize(links.length);
-        response.setLinks(IntStream.range(0, links.length)
-            .mapToObj(index -> {
-                LinkResponseDto linkResponse = new LinkResponseDto();
-                linkResponse.setId(index + 1);
-                linkResponse.setUrl(TestUtils.toUrl(links[index]));
-                return linkResponse;
-            })
-            .toList());
-        return response;
+    private ListLinksResponse createFetchLinksResponse(String... links) {
+        return new ListLinksResponse(IntStream.range(0, links.length)
+            .mapToObj(index -> new LinkResponse(index + 1, TestUtils.toUrl(links[index])))
+            .toList(), links.length);
     }
 
-    private LinkResponseDto createTrackingResponse(String link) {
-        LinkResponseDto response = new LinkResponseDto();
-        response.setId(new Random().nextInt());
-        response.setUrl(TestUtils.toUrl(link));
-        return response;
+    private LinkResponse createTrackingResponse(String link) {
+        return new LinkResponse(new Random().nextInt(), TestUtils.toUrl(link));
     }
 
-    private ApiErrorResponseDto createAlreadyTrackingResponse() {
-        return new ApiErrorResponseDto(
+    private ApiErrorResponse createAlreadyTrackingResponse() {
+        return new ApiErrorResponse(
             "Link is already tracking",
             "409",
             "LinkAlreadyTrackingException",
@@ -104,29 +93,23 @@ public class LinksCommandsBaseTest {
         );
     }
 
-    private ApiErrorResponseDto createUnsupportedResponse(String link, String... domains) {
-        return new ApiErrorResponseDto(
+    private ApiErrorResponse createUnsupportedResponse(String link, String... domains) {
+        return new ApiErrorResponse(
             "Domain " + TestUtils.toUrl(link).getHost() + " is not supported yet. List of all supported domains:\n"
                 + CommonUtils.joinEnumerated(Arrays.stream(domains).toList(), 1),
-            "400",
-            "",
-            "",
-            List.of()
+            "400"
         );
     }
 
-    private ApiErrorResponseDto createInvalidLinkResponse() {
-        return new ApiErrorResponseDto(
+    private ApiErrorResponse createInvalidLinkResponse() {
+        return new ApiErrorResponse(
             "The link is not correct",
-            "400",
-            "",
-            "",
-            List.of()
+            "400"
         );
     }
 
-    private ApiErrorResponseDto createNotTrackingYetResponse() {
-        return new ApiErrorResponseDto(
+    private ApiErrorResponse createNotTrackingYetResponse() {
+        return new ApiErrorResponse(
             "The link is not tracked by this chat",
             "404",
             "NoSuchLinkException",

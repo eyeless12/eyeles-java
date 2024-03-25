@@ -6,7 +6,7 @@ import com.pengrad.telegrambot.request.SendMessage;
 import edu.java.bot.TestUtils;
 import edu.java.bot.UpdateMock;
 import edu.java.bot.client.ScrapperClient;
-import edu.java.bot.client.dto.ApiErrorResponseDto;
+import edu.java.bot.client.dto.ApiErrorResponse;
 import edu.java.bot.client.exception.ConflictException;
 import edu.java.bot.service.command.StartCommand;
 import java.util.List;
@@ -83,8 +83,8 @@ public class StartCommandTest {
         assertThat(startCommand.toApiCommand()).isNotNull().isEqualTo(new BotCommand("start", DESCRIPTION));
     }
 
-    private ApiErrorResponseDto createConflictErrorResponse() {
-        return new ApiErrorResponseDto(
+    private ApiErrorResponse createConflictErrorResponse() {
+        return new ApiErrorResponse(
             "Chat is already registered",
             "409",
             "ChatAlreadyRegisteredException",

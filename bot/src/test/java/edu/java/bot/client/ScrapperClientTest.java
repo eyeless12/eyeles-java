@@ -2,8 +2,8 @@ package edu.java.bot.client;
 
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import edu.java.bot.TestUtils;
-import edu.java.bot.client.dto.LinkResponseDto;
-import edu.java.bot.client.dto.ListLinksResponseDto;
+import edu.java.bot.client.dto.LinkResponse;
+import edu.java.bot.client.dto.ListLinksResponse;
 import edu.java.bot.client.exception.BadRequestException;
 import edu.java.bot.client.exception.ConflictException;
 import edu.java.bot.client.exception.NotFoundException;
@@ -85,16 +85,9 @@ public class ScrapperClientTest {
                 )))
         );
 
-        ListLinksResponseDto response = scrapperClient.fetchLinks(chatId);
-        ListLinksResponseDto expectedResponse = new ListLinksResponseDto();
-        expectedResponse.setLinks(IntStream.range(0, size).mapToObj(index -> {
-            LinkResponseDto linkResponse = new LinkResponseDto();
-            linkResponse.setId(linkIds.get(index));
-            linkResponse.setUrl(TestUtils.toUrl(LINKS.get(index)));
-            return linkResponse;
-        }).toList());
-        expectedResponse.setSize(size);
-
+        ListLinksResponse response = scrapperClient.fetchLinks(chatId);
+        ListLinksResponse expectedResponse = new ListLinksResponse(IntStream.range(0, size)
+            .mapToObj(index -> new LinkResponse(linkIds.get(index), TestUtils.toUrl(LINKS.get(index)))).toList(), size);
         assertThat(response).usingRecursiveComparison().isEqualTo(expectedResponse);
     }
 
@@ -119,8 +112,8 @@ public class ScrapperClientTest {
                 .withHeader("Content-Type", "application/json")
                 .withBody(createLinkResponse(linkId, LINKS.getFirst()))));
         assertThat(scrapperClient.trackLink(chatId, LINKS.getFirst())).extracting(
-            LinkResponseDto::getId,
-            LinkResponseDto::getUrl
+            LinkResponse::id,
+            LinkResponse::url
         ).containsExactly(linkId, TestUtils.toUrl(LINKS.getFirst()));
     }
 
@@ -177,8 +170,8 @@ public class ScrapperClientTest {
                 .withHeader("Content-Type", "application/json")
                 .withBody(createLinkResponse(linkId, LINKS.getFirst()))));
         assertThat(scrapperClient.untrackLink(chatId, LINKS.getFirst())).extracting(
-            LinkResponseDto::getId,
-            LinkResponseDto::getUrl
+            LinkResponse::id,
+            LinkResponse::url
         ).containsExactly(linkId, TestUtils.toUrl(LINKS.getFirst()));
     }
 

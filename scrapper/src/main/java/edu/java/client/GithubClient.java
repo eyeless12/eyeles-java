@@ -1,7 +1,11 @@
 package edu.java.client;
 
-import edu.java.client.dto.GithubRepositoryResponseDto;
+import edu.java.client.dto.GithubRepositoryRequest;
+import edu.java.client.dto.GithubRepositoryResponse;
+import java.util.Optional;
 
 public interface GithubClient {
-    GithubRepositoryResponseDto fetchRepository(String owner, String repo);
+    Optional<GithubRepositoryResponse> fetchRepository(GithubRepositoryRequest githubRepositoryRequest);
+
+    boolean exists(GithubRepositoryRequest githubRepositoryRequest);
 }
