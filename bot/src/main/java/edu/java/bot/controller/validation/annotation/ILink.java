@@ -11,7 +11,7 @@ import java.lang.annotation.Target;
 @Constraint(validatedBy = LinkValidator.class)
 @Target({ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Link {
+public @interface ILink {
     String message() default "";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};

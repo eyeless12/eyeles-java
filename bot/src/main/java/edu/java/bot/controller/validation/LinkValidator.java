@@ -1,6 +1,6 @@
 package edu.java.bot.controller.validation;
 
-import edu.java.bot.controller.validation.annotation.Link;
+import edu.java.bot.controller.validation.annotation.ILink;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import java.net.MalformedURLException;
@@ -10,10 +10,10 @@ import java.net.URL;
 import org.springframework.stereotype.Component;
 
 @Component
-public class LinkValidator implements ConstraintValidator<Link, String> {
+public class LinkValidator implements ConstraintValidator<ILink, String> {
 
     @Override
-    public void initialize(Link constraintAnnotation) {
+    public void initialize(ILink constraintAnnotation) {
         ConstraintValidator.super.initialize(constraintAnnotation);
     }
 
