@@ -1,26 +1,24 @@
 package edu.java.service.jdbc;
 
-import edu.java.repository.ChatRepository;
+import edu.java.repository.jdbc.JdbcChatRepository;
 import edu.java.service.ChatService;
-import edu.java.service.domain.Chat;
 import edu.java.service.exception.ChatAlreadyRegisteredException;
 import edu.java.service.exception.NoSuchChatException;
-import org.springframework.stereotype.Service;
+import edu.java.service.model.jdbc.JdbcChat;
 
-@Service
 public class JdbcChatService implements ChatService {
-    private final ChatRepository chatRepository;
+    private final JdbcChatRepository chatRepository;
 
-    public JdbcChatService(ChatRepository chatRepository) {
+    public JdbcChatService(JdbcChatRepository chatRepository) {
         this.chatRepository = chatRepository;
     }
 
     @Override
     public void register(long chatId) {
         chatRepository.findById(chatId).ifPresentOrElse(c -> {
-            throw new ChatAlreadyRegisteredException("Chat is already registered");
+            throw new ChatAlreadyRegisteredException(ALREADY_REGISTERED_MESSAGE);
         }, () -> {
-            Chat chat = new Chat(chatId, null);
+            JdbcChat chat = new JdbcChat(chatId, null);
             chatRepository.add(chat);
         });
     }
@@ -28,7 +26,7 @@ public class JdbcChatService implements ChatService {
     @Override
     public void unregister(long chatId) {
         chatRepository.findById(chatId).ifPresentOrElse(c -> chatRepository.remove(chatId), () -> {
-            throw new NoSuchChatException("Chat is not registered");
+            throw new NoSuchChatException(NOT_REGISTERED_MESSAGE);
         });
     }
 }
