@@ -1,6 +1,6 @@
 package edu.java.service;
 
-import edu.java.service.domain.Link;
+import edu.java.service.model.Link;
 import java.util.Collection;
 
 public interface LinkService {
@@ -8,5 +8,9 @@ public interface LinkService {
 
     Link remove(String url, long chatId);
 
-    Collection<Link> listAll(long chatId);
+    Collection<? extends Link> listAll(long chatId);
+
+    String ALREADY_TRACKING_MESSAGE = "Link is already tracking";
+
+    String NOT_TRACKING_MESSAGE = "You are not tracking this link";
 }
