@@ -1,15 +1,15 @@
-package edu.java.configuration;
+package edu.java.configuration.repository;
 
 import edu.java.client.GithubClient;
 import edu.java.client.StackOverflowClient;
-import edu.java.client.TrackerBotClient;
+import edu.java.configuration.props.ApplicationConfig;
+import edu.java.gateway.UpdatesGateway;
 import edu.java.repository.jpa.JpaChatRepository;
 import edu.java.repository.jpa.JpaLinkRepository;
 import edu.java.service.ChatService;
 import edu.java.service.DomainService;
 import edu.java.service.LinkService;
 import edu.java.service.LinkUpdaterService;
-import edu.java.service.domains.Domain;
 import edu.java.service.domains.jpa.JpaDomain;
 import edu.java.service.domains.jpa.JpaGithubDomain;
 import edu.java.service.domains.jpa.JpaStackOverflowDomain;
@@ -27,15 +27,20 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @EnableJpaRepositories(basePackages = "edu.java.repository.jpa")
 public class JpaAccessConfiguration {
     @Bean
-    public List<Domain> domains(
+    public List<JpaDomain> domains(
         GithubClient githubClient,
         StackOverflowClient stackOverflowClient,
-        TrackerBotClient trackerBotClient
+        UpdatesGateway updatesGateway
     ) {
         return List.of(
-            new JpaGithubDomain(githubClient, trackerBotClient),
-            new JpaStackOverflowDomain(stackOverflowClient, trackerBotClient)
+            new JpaGithubDomain(githubClient, updatesGateway),
+            new JpaStackOverflowDomain(stackOverflowClient, updatesGateway)
         );
+    }
+
+    @Bean
+    public DomainService domainService(List<JpaDomain> domains) {
+        return new DomainService(domains);
     }
 
     @Bean

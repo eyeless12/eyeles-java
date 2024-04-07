@@ -1,12 +1,13 @@
 package edu.java.scrapper.client;
 
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
-import edu.java.client.TrackerBotClient;
 import edu.java.client.exception.BadRequestException;
-import edu.java.client.implementation.TrackerBotClientImpl;
+import edu.java.configuration.gateway.BotClientConfiguration;
+import edu.java.gateway.TrackerBotClient;
 import edu.java.client.retry.RetryConfiguration;
-import edu.java.configuration.ApplicationConfig;
+import edu.java.configuration.props.ApplicationConfig;
 import edu.java.service.model.Link;
+import edu.java.gateway.dto.LinkUpdate;
 import edu.java.service.model.jdbc.JdbcLink;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -24,9 +25,10 @@ public class TrackerBotClientTest {
 
     @BeforeEach
     public void setUp() {
-        trackerBotClient = new TrackerBotClientImpl(
+        trackerBotClient = new TrackerBotClient(
             BASE_URL,
-            new RetryConfiguration().trackerBotRetryTemplate(createApplicationConfig()));
+            new BotClientConfiguration().trackerBotRetryTemplate(createApplicationConfig(), new RetryConfiguration())
+        );
     }
 
     @Test
@@ -44,7 +46,12 @@ public class TrackerBotClientTest {
             .withRequestBody(equalToJson(createJson(link, description, chatIds)))
             .willReturn(ok()));
 
-        assertThatNoException().isThrownBy(() -> trackerBotClient.sendUpdate(link, description, chatIds));
+        assertThatNoException().isThrownBy(() -> trackerBotClient.sendUpdate(new LinkUpdate(
+            link.getId(),
+            link.getUrl(),
+            description,
+            chatIds
+        )));
     }
 
     @Test
@@ -63,11 +70,12 @@ public class TrackerBotClientTest {
             .willReturn(badRequest().withHeader("Content-Type", "application/json")
                 .withBody(createApiErrorResponseJson())));
 
-        assertThatExceptionOfType(BadRequestException.class).isThrownBy(() -> trackerBotClient.sendUpdate(
-            link,
+        assertThatExceptionOfType(BadRequestException.class).isThrownBy(() -> trackerBotClient.sendUpdate(new LinkUpdate(
+            link.getId(),
+            link.getUrl(),
             description,
             chatIds
-        ));
+        )));
     }
 
     private String createJson(Link link, String description, List<Long> chatIds) {
@@ -103,6 +111,6 @@ public class TrackerBotClientTest {
                 BASE_URL,
                 new RetryBuilder(1, new int[] {500}).constant(0)
             )
-        ), null, null);
+        ), null, null, false);
     }
 }
