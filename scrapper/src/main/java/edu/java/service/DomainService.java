@@ -5,13 +5,11 @@ import edu.java.util.CommonUtils;
 import java.net.URL;
 import java.util.List;
 import java.util.Optional;
-import org.springframework.stereotype.Service;
 
-@Service
 public class DomainService {
-    private final List<Domain> domains;
+    private final List<? extends Domain> domains;
 
-    public DomainService(List<Domain> domains) {
+    public DomainService(List<? extends Domain> domains) {
         this.domains = domains;
     }
 

@@ -1,8 +1,9 @@
-package edu.java.configuration;
+package edu.java.configuration.repository;
 
 import edu.java.client.GithubClient;
 import edu.java.client.StackOverflowClient;
-import edu.java.client.TrackerBotClient;
+import edu.java.configuration.props.ApplicationConfig;
+import edu.java.gateway.UpdatesGateway;
 import edu.java.repository.jdbc.JdbcChatRepository;
 import edu.java.repository.jdbc.JdbcLinkRepository;
 import edu.java.repository.jdbc.implementation.JdbcChatRepositoryImpl;
@@ -11,7 +12,6 @@ import edu.java.service.ChatService;
 import edu.java.service.DomainService;
 import edu.java.service.LinkService;
 import edu.java.service.LinkUpdaterService;
-import edu.java.service.domains.Domain;
 import edu.java.service.domains.jdbc.JdbcDomain;
 import edu.java.service.domains.jdbc.JdbcGithubDomain;
 import edu.java.service.domains.jdbc.JdbcStackOverflowDomain;
@@ -38,16 +38,21 @@ public class JdbcAccessConfiguration {
     }
 
     @Bean
-    public List<Domain> domains(
-        TrackerBotClient trackerBotClient,
+    public List<JdbcDomain> domains(
+        UpdatesGateway updatesGateway,
         GithubClient githubClient,
         StackOverflowClient stackOverflowClient,
         JdbcChatRepository chatRepository
     ) {
         return List.of(
-            new JdbcGithubDomain(trackerBotClient, githubClient, chatRepository),
-            new JdbcStackOverflowDomain(trackerBotClient, stackOverflowClient, chatRepository)
+            new JdbcGithubDomain(updatesGateway, githubClient, chatRepository),
+            new JdbcStackOverflowDomain(updatesGateway, stackOverflowClient, chatRepository)
         );
+    }
+
+    @Bean
+    public DomainService domainService(List<JdbcDomain> domains) {
+        return new DomainService(domains);
     }
 
     @Bean
