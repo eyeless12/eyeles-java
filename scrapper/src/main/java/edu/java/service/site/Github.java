@@ -1,15 +1,15 @@
-package edu.java.service.domains;
+package edu.java.service.site;
 
 import edu.java.client.GithubClient;
 import edu.java.client.dto.GithubRepositoryRequest;
 import edu.java.client.dto.GithubRepositoryResponse;
 import java.net.URL;
 
-public abstract class GithubDomain implements Domain {
+public abstract class Github implements Site {
     private static final String NAME = "github.com";
     protected final GithubClient githubClient;
 
-    protected GithubDomain(GithubClient githubClient) {
+    protected Github(GithubClient githubClient) {
         this.githubClient = githubClient;
     }
 

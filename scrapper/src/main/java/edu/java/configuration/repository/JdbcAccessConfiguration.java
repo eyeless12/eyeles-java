@@ -9,15 +9,15 @@ import edu.java.repository.jdbc.JdbcLinkRepository;
 import edu.java.repository.jdbc.implementation.JdbcChatRepositoryImpl;
 import edu.java.repository.jdbc.implementation.JdbcLinkRepositoryImpl;
 import edu.java.service.ChatService;
-import edu.java.service.DomainService;
 import edu.java.service.LinkService;
 import edu.java.service.LinkUpdaterService;
-import edu.java.service.domains.jdbc.JdbcDomain;
-import edu.java.service.domains.jdbc.JdbcGithubDomain;
-import edu.java.service.domains.jdbc.JdbcStackOverflowDomain;
+import edu.java.service.SiteService;
 import edu.java.service.jdbc.JdbcChatService;
 import edu.java.service.jdbc.JdbcLinkService;
 import edu.java.service.jdbc.JdbcLinkUpdaterService;
+import edu.java.service.site.jdbc.JdbcGithub;
+import edu.java.service.site.jdbc.JdbcSite;
+import edu.java.service.site.jdbc.JdbcStackOverflow;
 import java.util.List;
 import javax.sql.DataSource;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -38,30 +38,25 @@ public class JdbcAccessConfiguration {
     }
 
     @Bean
-    public List<JdbcDomain> domains(
+    public List<JdbcSite> sites(
         UpdatesGateway updatesGateway,
         GithubClient githubClient,
         StackOverflowClient stackOverflowClient,
         JdbcChatRepository chatRepository
     ) {
         return List.of(
-            new JdbcGithubDomain(updatesGateway, githubClient, chatRepository),
-            new JdbcStackOverflowDomain(updatesGateway, stackOverflowClient, chatRepository)
+            new JdbcGithub(updatesGateway, githubClient, chatRepository),
+            new JdbcStackOverflow(updatesGateway, stackOverflowClient, chatRepository)
         );
-    }
-
-    @Bean
-    public DomainService domainService(List<JdbcDomain> domains) {
-        return new DomainService(domains);
     }
 
     @Bean
     public LinkService linkService(
         JdbcChatRepository chatRepository,
         JdbcLinkRepository linkRepository,
-        DomainService domainService
+        SiteService siteService
     ) {
-        return new JdbcLinkService(chatRepository, linkRepository, domainService);
+        return new JdbcLinkService(chatRepository, linkRepository, siteService);
     }
 
     @Bean
@@ -73,8 +68,8 @@ public class JdbcAccessConfiguration {
     public LinkUpdaterService linkUpdaterService(
         JdbcLinkRepository linkRepository,
         ApplicationConfig applicationConfig,
-        List<JdbcDomain> domains
+        List<JdbcSite> sites
     ) {
-        return new JdbcLinkUpdaterService(linkRepository, applicationConfig, domains);
+        return new JdbcLinkUpdaterService(linkRepository, applicationConfig, sites);
     }
 }
