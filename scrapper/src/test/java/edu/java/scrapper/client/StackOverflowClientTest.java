@@ -5,7 +5,7 @@ import edu.java.client.StackOverflowClient;
 import edu.java.client.dto.StackOverflowPostInnerResponse;
 import edu.java.client.implementation.StackOverflowClientImpl;
 import edu.java.client.retry.RetryConfiguration;
-import edu.java.configuration.ApplicationConfig;
+import edu.java.configuration.props.ApplicationConfig;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import java.time.OffsetDateTime;
@@ -126,6 +126,6 @@ public class StackOverflowClientTest {
                 BASE_URL,
                 new RetryBuilder(1, new int[] {500}).constant(0)
             ), null
-        ), null, null);
+        ), null, null, false);
     }
 }

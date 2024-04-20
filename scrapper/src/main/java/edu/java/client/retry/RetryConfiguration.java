@@ -1,6 +1,6 @@
 package edu.java.client.retry;
 
-import edu.java.configuration.ApplicationConfig;
+import edu.java.configuration.props.ApplicationConfig;
 import java.util.Arrays;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -25,12 +25,7 @@ public class RetryConfiguration {
         return createRetryTemplate(applicationConfig.clients().stackOverflow().retry());
     }
 
-    @Bean
-    public RetryTemplate trackerBotRetryTemplate(ApplicationConfig applicationConfig) {
-        return createRetryTemplate(applicationConfig.clients().trackerBot().retry());
-    }
-
-    private RetryTemplate createRetryTemplate(ApplicationConfig.Retry retry) {
+    public RetryTemplate createRetryTemplate(ApplicationConfig.Retry retry) {
         Set<HttpStatusCode> statusCodes = Arrays.stream(retry.getStatusCodes())
             .mapToObj(HttpStatusCode::valueOf).collect(Collectors.toSet());
         RetryPolicy retryPolicy = retry.getMaxAttempts() == null
